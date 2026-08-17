@@ -1,6 +1,6 @@
-# 群友消息伪造机 v2
+# QQ 合并转发助手
 
-群友消息伪造机（SessionFaker）是面向 AstrBot 4.26.8+ 和 AIOCQHTTP/NapCat 的 QQ 合并转发插件。
+QQ 合并转发助手是面向 AstrBot 4.26.8+ 和 AIOCQHTTP/NapCat 的 QQ 合并转发插件。
 它支持命令和受控 LLM Tool，不使用外部 QQ 昵称 API，也不接受目标群号。
 
 ## 安全边界

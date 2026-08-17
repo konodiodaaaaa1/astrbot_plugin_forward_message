@@ -1,10 +1,10 @@
-name: astrbot_plugin_sessionfaker
-display_name: 群友消息伪造机
+name: astrbot_plugin_forward_message
+display_name: QQ 合并转发助手
 short_desc: 在当前 QQ 群中创建受控的合并转发消息
 desc: 创建受控的 QQ 合并转发消息，支持命令和 LLM Tool，仅可发送到当前群聊。
-version: v2.0.2
+version: v2.0.3
 author: Jason.Joestar / konodiodaaaaa1
-repo: https://github.com/konodiodaaaaa1/astrbot_plugin_sessionfaker
+repo: https://github.com/konodiodaaaaa1/astrbot_plugin_forward_message
 social_link: https://github.com/konodiodaaaaa1
 tags:
   - QQ

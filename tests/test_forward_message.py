@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from astrbot_plugin_sessionfaker.forward_message import (
+from astrbot_plugin_forward_message.forward_message import (
     ForwardMessageError,
     Limits,
     Presentation,

@@ -1,6 +1,14 @@
 # 更新日志
 
-本文件记录群友消息伪造机各版本的重要变更。
+本文件记录 QQ 合并转发助手各版本的重要变更。
+
+## [2.0.3] - 2026-08-17
+
+### 变更
+
+- 插件标识更名为 `astrbot_plugin_forward_message`。
+- 展示名称更名为“QQ 合并转发助手”。
+- 仓库地址更新为 `konodiodaaaaa1/astrbot_plugin_forward_message`。
 
 ## [2.0.2] - 2026-07-30
 
@@ -30,5 +38,6 @@
 - 新增受控的 `send_qq_forward_message` LLM Tool。
 - 新增当前群路由、群成员校验、权限模式、群白名单和可配置输入上限。
 
-[2.0.2]: https://github.com/konodiodaaaaa1/astrbot_plugin_sessionfaker/compare/v2.0.0...v2.0.2
-[2.0.0]: https://github.com/konodiodaaaaa1/astrbot_plugin_sessionfaker/releases/tag/v2.0.0
+[2.0.3]: https://github.com/konodiodaaaaa1/astrbot_plugin_forward_message/compare/v2.0.2...v2.0.3
+[2.0.2]: https://github.com/konodiodaaaaa1/astrbot_plugin_forward_message/compare/v2.0.0...v2.0.2
+[2.0.0]: https://github.com/konodiodaaaaa1/astrbot_plugin_forward_message/releases/tag/v2.0.0

@@ -26,7 +26,7 @@ from .forward_message import (
 )
 
 
-PLUGIN_NAME = "SessionFaker"
+PLUGIN_NAME = "QQ Forward Message"
 SUPPORTED_PLATFORM = "aiocqhttp"
 _COMMAND_PREFIX = re.compile(r"^\s*/?(?:伪造转发|伪造消息)\s*", re.IGNORECASE)
 _COMMAND_AT_PLACEHOLDER = re.compile(r"\[At:([^\]\r\n]+)\]")
@@ -306,10 +306,10 @@ class SessionFakerPlugin(Star):
         if isinstance(exc, ForwardMessageError):
             message = str(exc)
         else:
-            logger.exception("SessionFaker command failed")
+            logger.exception("QQ Forward Message command failed")
             message = "QQ 平台调用异常"
         event.stop_event()
-        return event.plain_result(f"SessionFaker：{message}")
+        return event.plain_result(f"QQ 合并转发助手：{message}")
 
     @filter.command("伪造转发")
     async def forward_command(self, event: AstrMessageEvent):
@@ -338,10 +338,10 @@ class SessionFakerPlugin(Star):
 
     @filter.command("伪造帮助")
     async def help_command(self, event: AstrMessageEvent):
-        """显示 SessionFaker 命令格式。"""
+        """显示 QQ 合并转发助手命令格式。"""
         event.stop_event()
         yield event.plain_result(
-            "SessionFaker 用法：\n"
+            "QQ 合并转发助手用法：\n"
             "/伪造转发 后接 JSON 节点数组，或每行一条：QQ号/[At:QQ号][显示名]: 内容\n"
             "行内支持 [at:QQ号]、[image:https://...]、[face:ID]\n"
             "旧格式：/伪造消息 QQ号/[At:QQ号] 内容 | QQ号/[At:QQ号] 内容"
@@ -377,7 +377,7 @@ class SessionFakerPlugin(Star):
         except ForwardMessageError as exc:
             return f"发送失败：{exc}"
         except Exception:
-            logger.exception("SessionFaker LLM tool failed")
+            logger.exception("QQ Forward Message LLM tool failed")
             return "发送失败：QQ 平台调用异常"
 
     async def terminate(self) -> None:

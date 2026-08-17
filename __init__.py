@@ -1,1 +1,1 @@
-"""SessionFaker AstrBot plugin."""
+"""QQ Forward Message AstrBot plugin."""

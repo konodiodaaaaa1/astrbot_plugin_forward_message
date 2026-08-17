@@ -4,13 +4,13 @@ from pathlib import Path
 import pytest
 from astrbot.api.message_components import At, AtAll, Image, Plain
 
-import astrbot_plugin_sessionfaker.main as sessionfaker_main
-from astrbot_plugin_sessionfaker.forward_message import (
+import astrbot_plugin_forward_message.main as sessionfaker_main
+from astrbot_plugin_forward_message.forward_message import (
     ForwardMessageError,
     parse_dsl,
     parse_json_nodes,
 )
-from astrbot_plugin_sessionfaker.main import SessionFakerPlugin
+from astrbot_plugin_forward_message.main import SessionFakerPlugin
 
 
 class FakeBot:
@@ -466,7 +466,7 @@ async def test_command_rejects_at_all_as_a_qq_id():
 
     results = [item async for item in plugin.forward_command(event)]
 
-    assert results == ["SessionFaker：@ 用户必须是有效的数字 QQ 号"]
+    assert results == ["QQ 合并转发助手：@ 用户必须是有效的数字 QQ 号"]
     assert not any(action == "send_group_forward_msg" for action, _ in bot.calls)
 
 
@@ -498,5 +498,5 @@ async def test_command_masks_unexpected_platform_errors():
     )
     plugin = make_plugin()
     results = [item async for item in plugin.forward_command(event)]
-    assert results == ["SessionFaker：QQ 平台调用异常"]
+    assert results == ["QQ 合并转发助手：QQ 平台调用异常"]
     assert "sensitive" not in results[0]
