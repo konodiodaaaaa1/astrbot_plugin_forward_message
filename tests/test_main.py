@@ -27,6 +27,11 @@ class FakeBot:
             return {"user_id": int(user_id), **self.members[user_id]}
         if action == "send_group_forward_msg":
             return {"message_id": 1}
+        if action == "send_private_forward_msg":
+            return {"message_id": 1}
+        if action == "get_stranger_info":
+            user_id = str(kwargs["user_id"])
+            return {"user_id": int(user_id), "nickname": f"Stranger {user_id}"}
         raise AssertionError(f"unexpected action: {action}")
 
 
@@ -222,24 +227,41 @@ async def test_send_path_rejects_cq_image_outside_astrbot_temp(monkeypatch, tmp_
 
 
 @pytest.mark.asyncio
-async def test_explicit_name_does_not_skip_membership_check():
+async def test_unknown_sender_falls_back_to_placeholder_name():
     bot = FakeBot(members())
     event = FakeEvent(bot)
     plugin = make_plugin()
 
-    with pytest.raises(ForwardMessageError, match="10003"):
-        await plugin._send_forward(event, parse_dsl("10003[Override]: hi"))
-    assert not any(call[0] == "send_group_forward_msg" for call in bot.calls)
+    await plugin._send_forward(event, parse_dsl("10003[Override]: hi"))
+
+    payload = next(
+        kwargs for action, kwargs in bot.calls if action == "send_group_forward_msg"
+    )
+    assert payload["messages"][0]["data"]["nickname"] == "Override"
 
 
 @pytest.mark.asyncio
-async def test_private_and_other_platform_events_are_rejected_without_actions():
+async def test_private_chat_sends_private_forward():
     plugin = make_plugin()
     private_bot = FakeBot(members())
-    with pytest.raises(ForwardMessageError, match="群聊"):
-        await plugin._send_forward(FakeEvent(private_bot, group_id=""), parse_dsl("10001: hi"))
-    assert private_bot.calls == []
+    event = FakeEvent(private_bot, group_id="")
+    await plugin._send_forward(event, parse_dsl("10001: hi"))
+    assert event._has_send_oper is True
+    actions = [call[0] for call in private_bot.calls]
+    assert "send_private_forward_msg" in actions
+    assert "send_group_forward_msg" not in actions
+    payload = next(
+        kwargs for action, kwargs in private_bot.calls if action == "send_private_forward_msg"
+    )
+    assert payload["user_id"] == 999
+    assert "group_id" not in payload
+    names = {call[1].get("user_id") for call in private_bot.calls if call[0] == "get_stranger_info"}
+    assert 10001 in names
 
+
+@pytest.mark.asyncio
+async def test_other_platform_events_are_rejected_without_actions():
+    plugin = make_plugin()
     other_bot = FakeBot(members())
     with pytest.raises(ForwardMessageError, match="AIOCQHTTP"):
         await plugin._send_forward(
@@ -305,7 +327,7 @@ async def test_command_and_tool_converge_on_send_service():
         tool_event,
         json.dumps([{"sender_id": "10002", "content": "hello"}]),
     )
-    assert result == "已向当前群发送 1 个合并转发节点"
+    assert result == "已向当前会话发送 1 个合并转发节点"
     assert tool_event._has_send_oper is True
     assert [call[0] for call in tool_bot.calls].count("send_group_forward_msg") == 1
 
@@ -471,7 +493,7 @@ async def test_command_rejects_at_all_as_a_qq_id():
 
 
 @pytest.mark.asyncio
-async def test_tool_returns_plain_error_and_never_sends_on_invalid_member():
+async def test_tool_sends_even_when_sender_is_not_a_group_member():
     bot = FakeBot(members())
     event = FakeEvent(bot)
     plugin = make_plugin()
@@ -479,9 +501,12 @@ async def test_tool_returns_plain_error_and_never_sends_on_invalid_member():
         event,
         '[{"sender_id":"123456","content":"hello"}]',
     )
-    assert result.startswith("发送失败：")
-    assert event._has_send_oper is False
-    assert not any(call[0] == "send_group_forward_msg" for call in bot.calls)
+    assert result == "已向当前会话发送 1 个合并转发节点"
+    assert event._has_send_oper is True
+    payload = next(
+        kwargs for action, kwargs in bot.calls if action == "send_group_forward_msg"
+    )
+    assert payload["messages"][0]["data"]["nickname"] == "Stranger 123456"
 
 
 @pytest.mark.asyncio

@@ -74,5 +74,30 @@
     "description": "NapCat 转发卡片来源文字",
     "type": "string",
     "default": "聊天记录"
+  },
+  "max_forward_depth": {
+    "description": "嵌套转发最大层数，0 表示不限制（仍受环检测与总量预算约束）",
+    "type": "int",
+    "default": 0
+  },
+  "max_total_nodes": {
+    "description": "整棵转发树的节点总数上限，含嵌套层",
+    "type": "int",
+    "default": 200
+  },
+  "max_forward_fetch": {
+    "description": "一次操作里最多拉取多少次转发内容，防止嵌套链失控",
+    "type": "int",
+    "default": 32
+  },
+  "enable_read_command": {
+    "description": "启用 /查看转发 命令（递归读取合并转发并输出缩进文本）",
+    "type": "bool",
+    "default": true
+  },
+  "enable_copy_command": {
+    "description": "启用 /转发复制 命令（读取引用转发后原样重发，保留嵌套层）",
+    "type": "bool",
+    "default": true
   }
 }
